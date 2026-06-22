@@ -1,3 +1,6 @@
+# Secret Environment Variables
+.env
+
 __pycache__/
 *.pyc
 *.pt
