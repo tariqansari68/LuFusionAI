@@ -7,6 +7,18 @@ A hybrid, high-performance AI engine combining native PyTorch transformer archit
 - **Ollama Orchestration:** Local model management and GGUF orchestration layer.
 - **Anthropic Hybrid Intelligence:** Cloud failover module to route complex workflows directly to Claude 3.5 Sonnet.
 - **Secure Isolation:** Environment masking prevents API keys or local weights from leaking online.
+- 
+## System Architecture
+
+```mermaid
+graph TD
+    A[User Request] --> B{Router Module}
+    B -->|Simple Task / Offline| C[Local Ollama Engine]
+    B -->|Complex Reasoning| D[Anthropic Claude Cloud API]
+    C --> E[Local PyTorch Output Check]
+    D --> E
+    E --> F[Unified Core Response]
+```
 
 ## Getting Started
 
@@ -47,6 +59,30 @@ Send a complex reasoning request to the Anthropic cloud pipeline:
 ```bash
 python claude_agent.py
 ```
+
+## Engineering & Design Decisions
+
+- **Hybrid Failover Architecture:** Implemented a routing layer that switches between low-latency local inference (Ollama) and high-reasoning cloud pipelines (Anthropic) based on prompt complexity.
+- **Strict Security Boundaries:** Masked infrastructure API keys using decoupled environment states (`.env`) to ensure zero-leak public deployment profiles.
+- **Resource-Agnostic Processing:** Integrated automated hardware tensor runtime detection to dynamically scale operations across CUDA, MPS (Apple Silicon), or basic CPU loops.
+
+## API & Code Reference
+
+### Claude Agent Routing
+```python
+from claude_agent import ask_claude
+
+# Returns plain text string response from Claude 3.5 Sonnet
+response = ask_claude(prompt="Your complex prompt here")
+print(response)
+```
+
+## Future Roadmap
+- [ ] Implement local vector embeddings using FAISS for private document ingestion.
+- [ ] Add an automated benchmarking script to measure tokens-per-second performance metrics.
+- [ ] Expand the automated test suite to include API latency mock analysis.
+
+
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
