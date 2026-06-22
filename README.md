@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="Lulu Fusion Logo Design_v1.png" alt="Lulu Fusion Logo" width="300"/>
+  <img src="Lulu_Fusion.png" alt="Lulu Fusion Logo" width="300"/>
 </div>
 
 
