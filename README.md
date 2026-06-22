@@ -1,4 +1,4 @@
-# LuLuFusionAI
+[![Python CI](https://github.com/tariqansari68/LuLuFusionAI/actions/workflows/tests.yml/badge.svg)](https://github.com/tariqansari68/LuLuFusionAI/actions/workflows/tests.yml)
 
 A hybrid, high-performance AI engine combining native PyTorch transformer architectures, localized Ollama orchestration, and advanced Anthropic Claude cloud capabilities.
 
