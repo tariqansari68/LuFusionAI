@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pt
+*.bin
+*.pth
+checkpoints/
+.venv/
+env/
+.vscode/
+.idea/
