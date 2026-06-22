@@ -27,3 +27,6 @@ jobs:
 
     - name: Run Hardware Check Script
       run: python train.py
+      
+    - name: Execute Python Unit Tests
+      run: python -m unittest test_agent.py
