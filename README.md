@@ -12,7 +12,7 @@ A hybrid, high-performance AI engine combining native PyTorch transformer archit
 - **Ollama Orchestration:** Local model management and GGUF orchestration layer.
 - **Anthropic Hybrid Intelligence:** Cloud failover module to route complex workflows directly to Claude 3.5 Sonnet.
 - **Secure Isolation:** Environment masking prevents API keys or local weights from leaking online.
-- 
+  
 ## System Architecture
 
 ```mermaid
