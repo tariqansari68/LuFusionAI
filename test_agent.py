@@ -33,4 +33,24 @@ def test_pytorch_provider_mock_execution():
     
     response = provider.generate("Test prompt context")
     assert response.text == "Generated text from PyTorch"
+
+
+@patch("transformers.AutoTokenizer.from_pretrained")
+@patch("transformers.AutoModelForCausalLM.from_pretrained")
+def test_pytorch_engine_initialization_flow(mock_model_loader, mock_tokenizer_loader):
+    """
+    Ensures that train.py can dynamically parse computing hardware hardware 
+    and output a properly structured PyTorchNativeProvider ready for the router.
+    """
+    from train import initialize_pytorch_engine
+    
+    # Set up realistic dummy mock tracking hooks
+    mock_tokenizer_loader.return_value = MagicMock()
+    mock_model_loader.return_value = MagicMock()
+    
+    provider = initialize_pytorch_engine(model_id="mock-unit-test-llama")
+    
+    assert provider.model_name == "mock-unit-test-llama"
+    assert provider.device in ["cuda", "cpu", "mps"]
+    
     assert response.provider == ModelType.PYTORCH
