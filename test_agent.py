@@ -4,7 +4,6 @@ import pytest
 import torch
 from unittest.mock import MagicMock, patch
 
-# Ensure current repository folder is explicitly visible to the Python path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 try:
@@ -30,8 +29,11 @@ def test_pytorch_provider_mock_execution():
     mock_model = MagicMock()
     mock_tokenizer = MagicMock()
     
-    # Mock tokenizers returning dictionary formats matching transformers behavior
-    mock_tokenizer.return_value = {"input_ids": torch.tensor([1, 2, 3])}
+    # Create a mock object that mimics HuggingFace's BatchEncoding with a chainable .to() method
+    mock_inputs = MagicMock()
+    mock_inputs.to.return_value = {"input_ids": torch.tensor([1, 2, 3])}
+    mock_tokenizer.return_value = mock_inputs
+    
     mock_model.generate.return_value = torch.tensor([4, 5, 6])
     mock_tokenizer.decode.return_value = "Generated text from PyTorch"
     
