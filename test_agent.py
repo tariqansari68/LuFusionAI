@@ -1,25 +1,36 @@
-import unittest
-from unittest.mock import patch, MagicMock
+import pytest
 import torch
-from train import initialize_model
-from claude_agent import ask_claude
+from unittest.mock import MagicMock, patch
+from claude_agent import RoutingConfig, OrchestrationRouter, PyTorchNativeProvider, ModelType, ModelResponse
 
-class TestLuLuFusionAI(unittest.TestCase):
+def test_dynamic_routing_rules():
+    config = RoutingConfig()
+    config.add_rule(lambda p: "local-pytorch" if "compute" in p.lower() else None)
+    
+    mock_local = MagicMock()
+    mock_cloud = MagicMock()
+    
+    providers = {"local-pytorch": mock_local, "claude-3-5-sonnet": mock_cloud}
+    router = OrchestrationRouter(providers, config, fallback_model="claude-3-5-sonnet")
+    
+    assert router.route("Run a complex heavy data compute loop") == "local-pytorch"
+    assert router.route("Hello world conversational prompt") == "claude-3-5-sonnet"
 
-    def test_hardware_detection(self):
-        """Ensure hardware initialization returns a valid device string."""
-        device = initialize_model()
-        self.assertIn(device, ["cuda", "mps", "cpu"])
-
-    @patch('claude_agent.Anthropic')
-    def test_claude_agent_mock(self, mock_anthropic):
-        """Test Claude agent without spending real API credits or exposing keys."""
-        mock_client = MagicMock()
-        mock_anthropic.return_value = mock_client
-        mock_client.messages.create.return_value.content.text = "Mocked Response"
-        
-        response = ask_claude("Hello", model_name="claude-3-5-sonnet-20241022")
-        self.assertEqual(response, "Mocked Response")
-
-if __name__ == '__main__':
-    unittest.main()
+def test_pytorch_provider_mock_execution():
+    mock_model = MagicMock()
+    mock_tokenizer = MagicMock()
+    
+    # Mock tokenizers returning dictionary formats matching transformers behavior
+    mock_tokenizer.return_value = {"input_ids": torch.tensor([[1, 2, 3]])}
+    mock_model.generate.return_value = torch.tensor([[1, 2, 3, 4, 5]])
+    mock_tokenizer.decode.return_value = "Generated text from PyTorch"
+    
+    provider = PyTorchNativeProvider(
+        model_name="local-llama", 
+        model_instance=mock_model, 
+        tokenizer=mock_tokenizer
+    )
+    
+    response = provider.generate("Test prompt context")
+    assert response.text == "Generated text from PyTorch"
+    assert response.provider == ModelType.PYTORCH
