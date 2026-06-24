@@ -2,27 +2,28 @@
   <img src="Lulu_Fusion.png" alt="Lulu Fusion Logo" width="300"/>
 </div>
 
-
 [![Python CI](https://github.com/tariqansari68/LuLuFusionAI/actions/workflows/tests.yml/badge.svg)](https://github.com/tariqansari68/LuLuFusionAI/actions/workflows/tests.yml)
 
-A hybrid, high-performance AI engine combining native PyTorch transformer architectures, localized Ollama orchestration, and advanced Anthropic Claude cloud capabilities.
+A hybrid, high-performance AI engine combining native PyTorch transformer architectures, localized Ollama orchestration, and advanced Anthropic Claude cloud capabilities into a single, unified interface.
 
 ## Features
 - **Local PyTorch Tracking:** Built on native torch tensor operations for low-latency sequence modeling.
 - **Ollama Orchestration:** Local model management and GGUF orchestration layer.
 - **Anthropic Hybrid Intelligence:** Cloud failover module to route complex workflows directly to Claude 3.5 Sonnet.
+- **Unified AI Interface:** Standardizes diverse backend models into a uniform data response structure.
 - **Secure Isolation:** Environment masking prevents API keys or local weights from leaking online.
   
 ## System Architecture
 
 ```mermaid
 graph TD
-    A[User Request] --> B{Router Module}
-    B -->|Simple Task / Offline| C[Local Ollama Engine]
-    B -->|Complex Reasoning| D[Anthropic Claude Cloud API]
-    C --> E[Local PyTorch Output Check]
-    D --> E
-    E --> F[Unified Core Response]
+    A[User Request] --> B{Orchestration Router}
+    B -->|Code / Low Complexity| C[Local Ollama Engine]
+    B -->|Heavy Reasoning / Fallback| D[Anthropic Claude Cloud API]
+    B -->|Math / Specialized Compute| E[Local PyTorch Engine]
+    C --> F[Unified Core Response]
+    D --> F
+    E --> F
 ```
 
 ## Getting Started
@@ -44,50 +45,68 @@ Create a `.env` file in the root directory and paste your Anthropic credential:
 ANTHROPIC_API_KEY=your_secret_api_key_here
 ```
 
+---
+
 ## Running the Engine
 
-### Local Hardware Check
-Verify your local acceleration hardware (CUDA, MPS, or CPU) is detected:
+### Execute Automated Test Suite
+Run the offline-safe testing framework containing mock-verified token processing loops:
+```bash
+pytest test_agent.py -v
+```
+
+### Run Orchestrated Pipeline
+Execute the multi-tiered model routing layer, hardware checks, and text processing pipelines:
 ```bash
 python train.py
 ```
 
-### Local Model Orchestration
-Build and run your localized GGUF agent using Ollama:
+### Local GGUF Agent Creation
+Build your localized model wrapper via Ollama:
 ```bash
 ollama create lulufusion -f ./Modelfile
 ollama run lulufusion
 ```
 
-### Cloud Agent Execution
-Send a complex reasoning request to the Anthropic cloud pipeline:
-```bash
-python claude_agent.py
-```
+---
 
 ## Engineering & Design Decisions
 
-- **Hybrid Failover Architecture:** Implemented a routing layer that switches between low-latency local inference (Ollama) and high-reasoning cloud pipelines (Anthropic) based on prompt complexity.
-- **Strict Security Boundaries:** Masked infrastructure API keys using decoupled environment states (`.env`) to ensure zero-leak public deployment profiles.
+- **Unified Abstraction Contracts:** Forces external cloud endpoints, internal HTTP servers, and raw PyTorch tensor arrays to communicate through an identical execution design pattern.
+- **Cost vs. Capability Optimization:** Automatically offloads basic tasks onto edge hardware, saving your cloud API budget for high-reasoning tasks.
+- **Automated Failover Handling:** Gracefully catches hardware failures, local offline states, or out-of-memory errors and shifts tasks directly to cloud backups.
 - **Resource-Agnostic Processing:** Integrated automated hardware tensor runtime detection to dynamically scale operations across CUDA, MPS (Apple Silicon), or basic CPU loops.
+
+---
 
 ## API & Code Reference
 
-### Claude Agent Routing
+### Orchestrated Router Invocation
 ```python
-from claude_agent import ask_claude
+from claude_agent import OrchestrationRouter, RoutingConfig, ClaudeCloudProvider, OllamaLocalProvider
 
-# Returns plain text string response from Claude 3.5 Sonnet
-response = ask_claude(prompt="Your complex prompt here")
-print(response)
+# 1. Initialize active engine blocks
+providers = {
+    "claude-3-5-sonnet": ClaudeCloudProvider(),
+    "qwen3-coder:latest": OllamaLocalProvider(model_name="qwen3-coder:latest")
+}
+
+# 2. Build custom runtime conditions
+config = RoutingConfig()
+config.add_rule(lambda prompt: "qwen3-coder:latest" if "code" in prompt.lower() else None)
+
+# 3. Instantiate and run unified router pipeline
+router = OrchestrationRouter(providers, routing_config=config, fallback_model="claude-3-5-sonnet")
+response = router.execute("Write a clean python data loop script.")
+
+print(f"Engine Used: {response.model_used}")
+print(f"Output text: {response.text}")
 ```
 
 ## Future Roadmap
 - [ ] Implement local vector embeddings using FAISS for private document ingestion.
 - [ ] Add an automated benchmarking script to measure tokens-per-second performance metrics.
-- [ ] Expand the automated test suite to include API latency mock analysis.
-
-
+- [ ] Implement asynchronous model evaluation using `asyncio` for non-blocking operations.
 
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
