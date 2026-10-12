@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="abc.png" alt="Lulu Fusion Logo" width="300"/>
+  <img src="abc.png" alt="" width="300"/>
 </div>
 
 [![Python CI](https://github.com/tariqansari68/LuLuFusionAI/actions/workflows/tests.yml/badge.svg)](https://github.com/tariqansari68/LuLuFusionAI/actions/workflows/tests.yml)
